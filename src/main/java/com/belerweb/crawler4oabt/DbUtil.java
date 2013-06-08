@@ -60,8 +60,8 @@ public class DbUtil {
     int result =
         getQuery()
             .update(
-                "INSERT INTO videos (id, tag, name, magnet, ed2k, thunder, created_time, file_size, download, author, description, extra, extra_key)",
-                params);
+                "INSERT INTO videos (id, tag, name, magnet, ed2k, thunder, created_time, file_size, download, author, description, extra, extra_key)"
+                    + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params);
     if (result == 1) {
       TID = Integer.parseInt(data.getExtraKey());
     }
