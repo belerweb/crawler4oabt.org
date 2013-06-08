@@ -41,8 +41,9 @@ public class DbUtil {
   public static int getTid() throws SQLException {
     if (TID == null) {
       Integer tid =
-          getQuery().query("SELECT MAX(extra_key) FROM videos WHERE extra = 'www.oabt.org'",
-              new ScalarHandler<Integer>());
+          Integer.parseInt(getQuery().query(
+              "SELECT MAX(extra_key) FROM videos WHERE extra = 'www.oabt.org'",
+              new ScalarHandler<String>()));
       if (tid == null) {
         tid = 0;
       }
