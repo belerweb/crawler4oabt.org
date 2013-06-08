@@ -42,7 +42,7 @@ public class DbUtil {
     if (TID == null) {
       Integer tid =
           Integer.parseInt(getQuery().query(
-              "SELECT MAX(extra_key) FROM videos WHERE extra = 'www.oabt.org'",
+              "SELECT MAX(CAST(extra_key AS UNSIGNED)) FROM videos WHERE extra = 'www.oabt.org'",
               new ScalarHandler<String>()));
       if (tid == null) {
         tid = 0;
