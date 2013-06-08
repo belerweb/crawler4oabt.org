@@ -1,5 +1,6 @@
 package com.belerweb.crawler4oabt;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,14 +20,20 @@ public class App {
       Element first = list.select("tbody").get(1);
       String rel = first.select("a").get(1).attr("rel");
       int maxTid = Integer.parseInt(rel);
-      DbUtil.setMaxTid(maxTid);
-      for (int i = DbUtil.getMaxTid(); i <= DbUtil.getMaxTid(); i++) {
+      debug("获取到最新资源ID：" + maxTid);
+      if (maxTid > DbUtil.getMaxTid()) {
+        debug("最新资源ID比数据库纪录的ID（" + DbUtil.getMaxTid() + "）大，存入数据库中...");
+        DbUtil.setMaxTid(maxTid);
+      }
+      for (int i = DbUtil.getTid(); i <= DbUtil.getMaxTid(); i++) {
+        debug("开始获取资源：" + i);
         String html = HttpUtil.get(getTidUrl(i));
         if (html.contains("'资源不存在'")) {
-          DbUtil.setTid(i);
+          debug("资源不存在：" + i);
           continue;
         }
 
+        debug("开始数据解析：" + i);
         Data data = new Data();
         Document doc = Jsoup.parse(html);
         Elements title = doc.select("div.component div.title");
@@ -47,15 +54,28 @@ public class App {
         data.setDescription(doc.select("td.description").html());
         data.setExtra("www.oabt.org");
         data.setExtraKey(String.valueOf(i));
-        // TODO SAVE data to database
+        debug("数据结束：" + i);
+        try {
+          debug("数据存入数据库：" + i);
+          DbUtil.save(data);
+        } catch (Exception e) {
+          debug("数据存入数据库失败：" + i + "。退出程序。");
+          e.printStackTrace();
+          System.exit(-1);
+        }
       }
     } catch (Exception e) {
+      debug("未知错误，退出程序。");
       e.printStackTrace();
     }
   }
 
   private static String getTidUrl(int tid) {
     return "http://www.oabt.org/show.php?tid=" + tid;
+  }
+
+  private static void debug(String log) {
+    System.out.println(new Date() + "\t" + log);
   }
 
 }
