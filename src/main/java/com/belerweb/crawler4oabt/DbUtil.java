@@ -40,14 +40,14 @@ public class DbUtil {
 
   public static int getTid() throws SQLException {
     if (TID == null) {
-      Integer tid =
-          Integer.parseInt(getQuery().query(
-              "SELECT MAX(CAST(extra_key AS UNSIGNED)) FROM videos WHERE extra = 'www.oabt.org'",
-              new ScalarHandler<String>()));
+      Long tid =
+          getQuery().query(
+              "SELECT MAX(CAST(extra_key AS SIGNED)) FROM videos WHERE extra = 'www.oabt.org'",
+              new ScalarHandler<Long>());
       if (tid == null) {
-        tid = 0;
+        tid = 0L;
       }
-      TID = tid;
+      TID = tid.intValue();
     }
     return TID;
   }
