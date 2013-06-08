@@ -140,8 +140,8 @@ public class HttpUtil {
     HttpParams params = new BasicHttpParams();
     params.setParameter(CoreProtocolPNames.USER_AGENT, randomUA());
     params.setParameter(CoreProtocolPNames.HTTP_CONTENT_CHARSET, randomUA());
-    HttpConnectionParams.setConnectionTimeout(params, 30);
-    HttpConnectionParams.setSoTimeout(params, 30);
+    HttpConnectionParams.setConnectionTimeout(params, 10000);
+    HttpConnectionParams.setSoTimeout(params, 10000);
     DefaultHttpClient client = new DefaultHttpClient(params);
     client.addResponseInterceptor(new HttpResponseInterceptor() {
       public void process(final HttpResponse response, final HttpContext context)
