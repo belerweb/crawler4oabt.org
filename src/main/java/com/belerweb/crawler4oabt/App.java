@@ -25,7 +25,7 @@ public class App {
         debug("最新资源ID比数据库纪录的ID（" + DbUtil.getMaxTid() + "）大，存入数据库中...");
         DbUtil.setMaxTid(maxTid);
       }
-      for (int i = DbUtil.getTid(); i <= DbUtil.getMaxTid(); i++) {
+      for (int i = DbUtil.getTid() + 1; i <= DbUtil.getMaxTid(); i++) {
         debug("开始获取资源：" + i);
         String html = HttpUtil.get(getTidUrl(i));
         if (html.contains("'资源不存在'")) {
