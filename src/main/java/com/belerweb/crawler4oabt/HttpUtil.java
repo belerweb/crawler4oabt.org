@@ -19,6 +19,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 
@@ -139,6 +140,8 @@ public class HttpUtil {
     HttpParams params = new BasicHttpParams();
     params.setParameter(CoreProtocolPNames.USER_AGENT, randomUA());
     params.setParameter(CoreProtocolPNames.HTTP_CONTENT_CHARSET, randomUA());
+    HttpConnectionParams.setConnectionTimeout(params, 30);
+    HttpConnectionParams.setSoTimeout(params, 30);
     DefaultHttpClient client = new DefaultHttpClient(params);
     client.addResponseInterceptor(new HttpResponseInterceptor() {
       public void process(final HttpResponse response, final HttpContext context)
