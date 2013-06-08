@@ -54,7 +54,7 @@ public class App {
         data.setDescription(doc.select("td.description").html());
         data.setExtra("www.oabt.org");
         data.setExtraKey(String.valueOf(i));
-        debug("数据结束：" + i);
+        debug("数据解析结束：" + i);
         try {
           debug("数据存入数据库：" + i);
           DbUtil.save(data);
@@ -63,6 +63,8 @@ public class App {
           e.printStackTrace();
           System.exit(-1);
         }
+        debug("资源" + i + "处理结束。");
+        debug("===================================");
       }
     } catch (Exception e) {
       debug("未知错误，退出程序。");
