@@ -4,17 +4,23 @@ import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.DeflateDecompressingEntity;
+import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HttpContext;
 
 /**
  * HTTP 工具类
@@ -110,7 +116,10 @@ public class HttpUtil {
     request.addHeader(HttpHeaders.ACCEPT,
         "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
     request.addHeader(HttpHeaders.REFERER, url);
+    request.addHeader(HttpHeaders.ACCEPT_ENCODING, "gzip, deflate");
     request.addHeader(HttpHeaders.ACCEPT_LANGUAGE, "zh-cn;q=0.5");
+    request.addHeader(HttpHeaders.CACHE_CONTROL, "max-age=0");
+    request.addHeader(HttpHeaders.CONNECTION, "keep-alive");
     HttpResponse response = newHttpClient().execute(request);
     int statusCode = response.getStatusLine().getStatusCode();
     HttpEntity entity = response.getEntity();
@@ -130,7 +139,30 @@ public class HttpUtil {
     HttpParams params = new BasicHttpParams();
     params.setParameter(CoreProtocolPNames.USER_AGENT, randomUA());
     params.setParameter(CoreProtocolPNames.HTTP_CONTENT_CHARSET, randomUA());
-    return new DefaultHttpClient(params);
+    DefaultHttpClient client = new DefaultHttpClient(params);
+    client.addResponseInterceptor(new HttpResponseInterceptor() {
+      public void process(final HttpResponse response, final HttpContext context)
+          throws HttpException, IOException {
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+          Header ceheader = entity.getContentEncoding();
+          if (ceheader != null) {
+            HeaderElement[] codecs = ceheader.getElements();
+            for (int i = 0; i < codecs.length; i++) {
+              if (codecs[i].getName().equalsIgnoreCase("gzip")) {
+                response.setEntity(new GzipDecompressingEntity(response.getEntity()));
+                return;
+              }
+              if (codecs[i].getName().equalsIgnoreCase("deflate")) {
+                response.setEntity(new DeflateDecompressingEntity(response.getEntity()));
+                return;
+              }
+            }
+          }
+        }
+      }
+    });
+    return client;
   }
 
   /**
