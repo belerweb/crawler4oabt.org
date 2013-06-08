@@ -22,8 +22,8 @@ public class DbUtil {
     if (MAX_TID == null) {
       QueryRunner query = getQuery();
       Integer maxTid =
-          query.query("SELECT value FROM options WHERE name = 'oabt.org_max_tid'",
-              new ScalarHandler<Integer>());
+          Integer.parseInt(query.query("SELECT value FROM options WHERE name = 'oabt.org_max_tid'",
+              new ScalarHandler<String>()));
       if (maxTid == null) {
         query.update("INSERT INTO options (name, value) VALUE ('oabt.org_max_tid', ?)", 0);
         maxTid = 0;
