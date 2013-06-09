@@ -66,6 +66,7 @@ public class App {
         debug("资源" + i + "处理结束。");
         debug("===================================");
       }
+      debug("已抓取完数据，稍微再重新抓取，程序退出。");
     } catch (Exception e) {
       debug("未知错误，退出程序。");
       e.printStackTrace();
