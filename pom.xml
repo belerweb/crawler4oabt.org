@@ -46,6 +46,11 @@
 			<version>5.1.25</version>
 		</dependency>
 		<dependency>
+			<groupId>com.belerweb</groupId>
+			<artifactId>url-converter</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
