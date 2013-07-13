@@ -1,7 +1,10 @@
-target
-.settings
-.project
-.classpath
+/target
+/.settings
+/.idea
+/.project
+/*.iml
+/.classpath
+/bin
 .DS_Store
 .DS_Store?
 ._*
